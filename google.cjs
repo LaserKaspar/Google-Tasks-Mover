@@ -111,16 +111,30 @@ async function getMyLists() {
     return res;
 }
 
-async function movetask(taskid, tasklistid) {
+async function getTasksOfList(tasklistid, maxResults, pageToken) {
     const service = google.tasks('v1');
     
-    const res = await service.tasks.patch({
-        tasklist: tasklistid,
-        task: taskid
-    });
+    const res = await service.tasks.list({tasklist: tasklistid, showCompleted: true, showDeleted: true, showHidden: true, maxResults: maxResults, pageToken: pageToken});
 
     return res;
 }
 
+async function moveTask(taskid, tasklistid, targettasklistid) {
+    const service = google.tasks('v1');
+    
+    let res = await service.tasks.get({task: taskid, tasklist: tasklistid});
+    const task = res.data;
+    
+    res = await service.tasks.insert({
+        tasklist: targettasklistid,
+        requestBody: task
+    });
+    res = await service.tasks.delete({
+        tasklist: tasklistid,
+        task: taskid
+    })
+    return res;
+}
 
-module.exports = {scopes, requestRefreshToken, authenticate, getMyLists, movetask}
+
+module.exports = {scopes, requestRefreshToken, authenticate, getMyLists, getTasksOfList, moveTask}
