@@ -1,6 +1,6 @@
 # Google Tasks - Mover
 
-A tool to move your google tasks between lists in bulk.
+A tool to move your google tasks between lists in bulk. Due to API limitations it is really slow ~1 Task / Second.
 
 ## My Usecase
 

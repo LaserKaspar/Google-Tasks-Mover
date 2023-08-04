@@ -1,3 +1,4 @@
+import { fail } from 'assert';
 import { scopes, requestRefreshToken, authenticate, getMyLists, getTasksOfList, moveTask } from './google.cjs';
 
 // TODO: Get tasks of list, get list by name
@@ -30,13 +31,28 @@ requestRefreshToken(scopes).then(token => {
             console.log("Start moving tasks to list", targetList.title);
 
             for (const [index, item] of items.entries()) {
-                await moveTask(item.id, sourceList.id, targetList.id);
-                console.log(`Moved ${index + 1}/${items.length} tasks.`)
+                while (true) {
+                    let fails = 0;
+                    try {
+                        fails++;
+                        await moveTask(item, sourceList.id, targetList.id);
+                        console.log(`Moved ${index + 1}/${items.length} tasks.`);
+                        break;
+                    }
+                    catch {
+                        console.log("Ratelimited. Waiting...");
+                        await timeout(1000 * fails); // Google API Rate Limiting
+                    }
+                }
             }
 
             console.log("Moving done");
         })
         .catch(console.error);
 });
+
+function timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 console.log("INIT");
