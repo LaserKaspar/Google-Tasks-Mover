@@ -13,8 +13,6 @@ requestRefreshToken(scopes).then(token => {
             // TODO: Let user select list
             const sourceList = { title: "Schule", id: "MDQ3NDQ5MTk0MjkwNDE5MTMwNjQ6MDow" };
             const targetList = { title: "Target", id: "LXQ5SmNRZVlQcXdlNDNHXw" };
-            const swapNames = false;
-            const swapLists = false; // TODO: Support
 
             // Step 2: Get Tasks of Lists
             console.log("Fetching tasks of list", sourceList.title);
@@ -31,16 +29,16 @@ requestRefreshToken(scopes).then(token => {
             console.log("Start moving tasks to list", targetList.title);
 
             for (const [index, item] of items.entries()) {
+                let fails = 0;
                 while (true) {
-                    let fails = 0;
                     try {
-                        fails++;
                         await moveTask(item, sourceList.id, targetList.id);
                         console.log(`Moved ${index + 1}/${items.length} tasks.`);
                         break;
                     }
                     catch {
-                        console.log("Ratelimited. Waiting...");
+                        fails++;
+                        console.log(`Ratelimited. Waiting... (x${fails})`);
                         await timeout(1000 * fails); // Google API Rate Limiting
                     }
                 }
