@@ -4,7 +4,7 @@ A tool to move your Google Tasks between lists in bulk. Due to API limitations i
 
 This makes it possible to change the default list for Google Assistant. (You can just swap the two lists)
 
-I hope this helps someone until Google finally adds a feature to change Google Assistants default task list. 
+I hope this helps someone until Google finally adds a feature to change Google Assistants default Tasklist. 
 
 ## Usage
 
@@ -43,5 +43,5 @@ Lastly you need to run ``node .`` again and authenticate once more. This will th
 
 ## TODO:
 
-- Don't just move one to the other - instead swao them
+- Don't just move one to the other - instead swap the lists completely
 - automatically swap the name of the lists
