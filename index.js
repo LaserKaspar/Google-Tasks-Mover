@@ -1,18 +1,22 @@
 import { fail } from 'assert';
 import { scopes, requestRefreshToken, authenticate, getMyLists, getTasksOfList, moveTask } from './google.cjs';
 
-// TODO: Get tasks of list, get list by name
+import dotenv from 'dotenv'
+dotenv.config();
 
 requestRefreshToken(scopes).then(token => {
     authenticate(token)
         .then(async () => {
-            // Step 1: Obtain Lists
-            // const lists = (await getMyLists()).data.items;
-            // console.log(lists);
+            if(!(process.env.SOURCE_NAME && process.env.SOURCE_ID && process.env.TARGET_NAME && process.env.TARGET_ID)) {
+                console.log("Please configure your .env file.")
+                // Step 1: Obtain Lists
+                const lists = (await getMyLists()).data.items;
+                console.log(lists.map(list => {return { title: list.title, id: list.id }}));
+                return;
+            }
 
-            // TODO: Let user select list
-            const sourceList = { title: "Schule", id: "MDQ3NDQ5MTk0MjkwNDE5MTMwNjQ6MDow" };
-            const targetList = { title: "Target", id: "LXQ5SmNRZVlQcXdlNDNHXw" };
+            const sourceList = { title: process.env.SOURCE_NAME, id: process.env.SOURCE_ID };
+            const targetList = { title: process.env.TARGET_NAME, id: process.env.TARGET_ID };
 
             // Step 2: Get Tasks of Lists
             console.log("Fetching tasks of list", sourceList.title);
