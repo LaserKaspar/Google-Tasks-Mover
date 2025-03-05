@@ -75,7 +75,7 @@ async function requestRefreshToken(scopes) {
                             tokens
                         } = await oauth2Client.getToken(qs.get('code'));
                         oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
-                        resolve(tokens.refresh_token);
+                        resolve(tokens);
                     }
                 } catch (e) {
                     reject(e);
@@ -95,10 +95,8 @@ const scopes = [
     'https://www.googleapis.com/auth/tasks'
 ];
 
-async function authenticate(token) {
-    oauth2Client.setCredentials({
-        refresh_token: token
-    });
+async function authenticate(tokens) {
+    oauth2Client.setCredentials(tokens);
 }
 
 // Custom Logic
